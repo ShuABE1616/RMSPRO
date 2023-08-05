@@ -1,3 +1,8 @@
+
+#ifndef _RMSPRO_H_
+#define _RMSPRO_H_
+#include <Arduino.h>
+
 typedef enum //ラインセンサとボールセンサの方向指定で使用
 {
 	front,
