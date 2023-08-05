@@ -33,7 +33,7 @@ int RMSPRO::b(void){
   return ret;
 }
 
-int RMSPRO::b(number num){
+int RMSPRO::b(DIRECTION dir){
   int ret = 0;
   switch (dir)
   {
