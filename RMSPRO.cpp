@@ -1,7 +1,29 @@
+#include "RMSPRO.h"
+#include <avr/io.h>
+#include <TimerOne.h>
+
+#define MT1fr 3
+#define MT1ba 9
+#define MT2fr 10
+#define MT2ba 5 
+#define frn   1
+#define bac   2
+#define IR1   7
+#define IR2   6
+#define IR3   4
+#define IR4   8
+#define LINE1 14
+#define BTN   2
+
+
 volatile static int _ir1;
 volatile static int _ir2;
 volatile static int _ir3;
 volatile static int _ir4;
+
+//コンストラクタ
+RMSPRO::RMSPRO(void){
+}
 
 void RMSPRO::timerISR(void){
 
@@ -55,3 +77,15 @@ int RMSPRO::b(DIRECTION dir){
   }
   return ret;
 }
+
+RMSPRO::init{
+  pinMode(IR1, INPUT);
+  pinMode(IR2, INPUT);
+  pinMode(IR3, INPUT);
+  pinMode(IR4, INPUT);
+  pinMode(LINE1, INPUT);
+  pinMode(BTN, INPUT);
+  Serial.begin(9600);
+  Timer1.initialize();
+  Timer1.attachInterrupt(timerISR);
+} 
