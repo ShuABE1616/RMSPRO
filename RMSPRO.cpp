@@ -78,6 +78,35 @@ int RMSPRO::b(DIRECTION dir){
   return ret;
 }
 
+void RMSPRO::irUpdate(void)
+{
+  _ir1 = 0;
+  _ir2 = 0;
+  _ir3 = 0;
+  _ir4 = 0;
+
+  for (int i = 0; i < 500; i++)
+  {
+    if (digitalRead(IR1) == LOW)
+    {
+      _ir1++;
+    }
+    if (digitalRead(IR2) == LOW)
+    {
+      _ir2++;
+    }
+    if (digitalRead(IR3) == LOW)
+    {
+      _ir3++;
+    }
+    if (digitalRead(IR4) == LOW)
+    {
+      _ir4++;
+    }
+  }
+}
+
+
 RMSPRO::init{
   pinMode(IR1, INPUT);
   pinMode(IR2, INPUT);
