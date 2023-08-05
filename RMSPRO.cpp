@@ -59,7 +59,7 @@ int RMSPRO::b(DIRECTION dir){
   int ret = 0;
   switch (dir)
   {
-  case　front :
+  case front :
     ret = _ir1;
     break;
   case right:
