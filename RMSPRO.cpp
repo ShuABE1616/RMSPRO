@@ -107,7 +107,7 @@ void RMSPRO::irUpdate(void)
 }
 
 
-RMSPRO::init{
+RMSPRO::init(void){
   pinMode(IR1, INPUT);
   pinMode(IR2, INPUT);
   pinMode(IR3, INPUT);
