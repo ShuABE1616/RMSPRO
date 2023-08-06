@@ -108,13 +108,25 @@ void RMSPRO::irUpdate(void)
 
 
 RMSPRO::init(void){
+  /*ライン*/
+  pinMode(LINE1, INPUT);
+
+  /*ボタン*/
+  pinMode(BTN, INPUT);
+
+  /*赤外線センサ*/
   pinMode(IR1, INPUT);
   pinMode(IR2, INPUT);
   pinMode(IR3, INPUT);
   pinMode(IR4, INPUT);
-  pinMode(LINE1, INPUT);
-  pinMode(BTN, INPUT);
-  Serial.begin(9600);
-  Timer1.initialize();
-  Timer1.attachInterrupt(timerISR);
+
+  pinMode(MT1fr, OUTPUT);
+  pinMode(MT1ba, OUTPUT);
+  pinMode(MT2fr, OUTPUT);
+  pinMode(MT2ba, OUTPUT);
+
+  /*タイマ割り込み開始*/
+  Timer1.initialize(); //2040マイクロ秒周期でタイマ割込みが入る
+  Timer1.attachInterrupt(timerISR); 
+
 } 
