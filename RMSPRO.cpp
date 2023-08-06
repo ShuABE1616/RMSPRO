@@ -238,7 +238,7 @@ int RMSPRO::b(DIR dir)
 ////////////////////////ボールセンサーの値を返す////////////////////////
 //beginner mode
 //ボールセンサーの値を返す
-int RMSPRO::b(void)
+/*int RMSPRO::b(void)
 {
    int ret = 0;
   ret = _ir1;
@@ -316,7 +316,80 @@ int RMSPRO::b(number num)
     break;
   }
   return ret;
+}*/
+
+int RMSPRO::b(DIR dir)
+{
+  int ret = 0;
+  switch (dir)
+  {
+    case front:
+      ret = _ir1;
+      break;
+    case right:
+      ret = _ir2;
+      break;
+    case back:
+      ret = _ir3;
+      break;
+    case left:
+      ret = _ir4;
+      break;
+    default:
+      ret = 0;
+      break;
+  }
+  return ret;
 }
+
+int RMSPRO::b(DIR2 dir)
+{
+  int ret = 0;
+  switch (dir)
+  {
+    case fr:
+      ret = _ir1;
+      break;
+    case ri:
+      ret = _ir2;
+      break;
+    case ba:
+      ret = _ir3;
+      break;
+    case le:
+      ret = _ir4;
+      break;
+    default:
+      ret = 0;
+      break;
+  }
+  return ret;
+}
+
+int RMSPRO::b(number num)
+{
+  int ret = 0;
+  switch (num)
+  {
+    case d1:
+      ret = _ir1;
+      break;
+    case d2:
+      ret = _ir2;
+      break;
+    case d3:
+      ret = _ir3;
+      break;
+    case d4:
+      ret = _ir4;
+      break;
+    default:
+      ret = 0;
+      break;
+  }
+  return ret;
+}
+
 
 //advanced mode
 //ボールセンサーの値を返す
