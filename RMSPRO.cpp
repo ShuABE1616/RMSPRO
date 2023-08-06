@@ -210,7 +210,7 @@ void RMSPRO::motor(int left, int right)
 
 /////////////////////モーターの出力を設定end/////////////////////
 
-int RMSPRO::b(DIR dir)
+/*int RMSPRO::b(DIR dir)
 {
   int ret = 0;
   switch (dir)
@@ -238,7 +238,7 @@ int RMSPRO::b(DIR dir)
 ////////////////////////ボールセンサーの値を返す////////////////////////
 //beginner mode
 //ボールセンサーの値を返す
-/*int RMSPRO::b(void)
+int RMSPRO::b(void)
 {
    int ret = 0;
   ret = _ir1;
