@@ -107,7 +107,7 @@ void RMSPRO::irUpdate(void)
 }
 
 
-RMSPRO::init(void){
+void RMSPRO::init(void){
   /*ライン*/
   pinMode(LINE1, INPUT);
 
