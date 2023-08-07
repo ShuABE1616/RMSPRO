@@ -2,8 +2,8 @@
 Project Name    : RMSPRO
 File Name       : RMSPRO.cpp
 Creation Date   : c++
-author          : Shu ABE,Yuri Hirata
-update date     : 2023/8/2
+author          : Shu ABE,Hibiki SHINOHARA,Yuri HIRATA
+update date     : 2023/8/7
 
 Copyright © <2023> RobomatchProject
 
