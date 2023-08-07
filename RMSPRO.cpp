@@ -210,113 +210,10 @@ void RMSPRO::motor(int left, int right)
 
 /////////////////////モーターの出力を設定end/////////////////////
 
-/*int RMSPRO::b(DIR dir)
-{
-  int ret = 0;
-  switch (dir)
-  {
-  case front:
-    ret = _ir1;
-    break;
-  case right:
-    ret = _ir2;
-    break;
-  case back:
-    ret = _ir3;
-    break;
-  case left:
-    ret = _ir4;
-    break;
-  default:
-    ret = 0;
-    break;
-  }
-  return ret;
-}
-
-
 ////////////////////////ボールセンサーの値を返す////////////////////////
 //beginner mode
 //ボールセンサーの値を返す
-int RMSPRO::b(void)
-{
-   int ret = 0;
-  ret = _ir1;
-  return ret;
-}
 
-//ボールセンサーの値を返す
-int RMSPRO::b(DIR2 dir)
-{
-  int ret = 0;
-  switch (dir)
-  {
-  case fr:
-    ret = _ir1;
-    break;
-  case ri:
-    ret = _ir2;
-    break;
-  case ba:
-    ret = _ir3;
-    break;
-  case le:
-    ret = _ir4;
-    break;
-  default:
-    ret = 0;
-    break;
-  }
-  return ret;
-}
-
-int RMSPRO::b(DIR dir)
-{
-  int ret = 0;
-  switch (dir)
-  {
-  case front:
-    ret = _ir1;
-    break;
-  case right:
-    ret = _ir2;
-    break;
-  case back:
-    ret = _ir3;
-    break;
-  case left:
-    ret = _ir4;
-    break;
-  default:
-    ret = 0;
-    break;
-  }
-  return ret;
-}
-
-int RMSPRO::b(number num)
-{
-  int ret = 0;
-  switch (num)
-  {
-  case d1:
-    ret = _ir1;
-    break;
-  case d2:
-    ret = _ir2;
-    break;
-  case d3:
-    ret = _ir3;
-    break;
-  case d4:
-    ret = _ir4;
-    break;
-  default:
-    ret = 0;
-    break;
-  }
-  return ret;
-}*/
 
 int RMSPRO::b(DIR dir)
 {
@@ -393,6 +290,7 @@ int RMSPRO::b(number num)
 
 //advanced mode
 //ボールセンサーの値を返す
+
 int RMSPRO::ball(void)
 {
    int ret = 0;
@@ -524,36 +422,44 @@ int RMSPRO::line(void)
 ////////////////////////ラインセンサーの値を返すend////////////////////////
 
 ////////////////////////センサモニタ////////////////////////
+
 //beginner mode
 void RMSPRO::srmo(void)
 {
-  Serial.print("ボール1:");
-  Serial.print(b());
-  Serial.print("  ");
-  Serial.print("ライン1:");
-  Serial.print(analogRead(LINE1));
-  Serial.print("  ");
-  Serial.print("ボタン:");
-  Serial.print(digitalRead(BTN));
-  Serial.print("  ");
-  Serial.println();
+  Serial.print("(");
+  Serial.print(r.bt());
+  Serial.print(",");
+  Serial.print(r.b(d1));
+  Serial.print(",");
+  Serial.print(r.b(d2));
+  Serial.print(",");
+  Serial.print(r.b(d3));
+  Serial.print(",");
+  Serial.print(r.b(d4));
+  Serial.print(",");
+  Serial.print(r.l());
+  Serial.print(")");
 }
+
 
 //advanced mode
-
 void RMSPRO::sensorMonitor(void)
 {
-  Serial.print("ボール1:");
-  Serial.print(b());
-  Serial.print("  ");
-  Serial.print("ライン1:");
-  Serial.print(analogRead(LINE1));
-  Serial.print("  ");
-  Serial.print("ボタン:");
-  Serial.print(digitalRead(BTN));
-  Serial.print("  ");
-  Serial.println();
+  Serial.print("(");
+  Serial.print(r.btn());
+  Serial.print(",");
+  Serial.print(r.ball(d1));
+  Serial.print(",");
+  Serial.print(r.ball(d2));
+  Serial.print(",");
+  Serial.print(r.ball(d3));
+  Serial.print(",");
+  Serial.print(r.ball(d4));
+  Serial.print(",");
+  Serial.print(r.line());
+  Serial.print(")");
 }
+//(ボタン,ボール前(d1),ボール右(d2),ボール後ろ(d3),ボール左(d4),ライン)
 ////////////////////////センサモニタend////////////////////////
 
 ////////////////////////ボタンの値を返す////////////////////////
