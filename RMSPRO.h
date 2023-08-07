@@ -65,6 +65,7 @@ class RMSPRO{
         int b(DIR2 dir);
         int l(void);
         int bt(void);
+        int srmo(void);
 
         //advance mode
         void motor(int left, int right);
@@ -75,6 +76,7 @@ class RMSPRO{
         int ball(DIR2 dir);
         int line(void);
         int btn(void);
+        int sensormonitor(void);
 
     private:
             static void irUpdate(void);
