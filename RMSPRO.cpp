@@ -427,17 +427,17 @@ int RMSPRO::line(void)
 void RMSPRO::srmo(void)
 {
   Serial.print("(");
-  Serial.print(r.bt());
+  Serial.print(bt());
   Serial.print(",");
-  Serial.print(r.b(d1));
+  Serial.print(b(d1));
   Serial.print(",");
-  Serial.print(r.b(d2));
+  Serial.print(b(d2));
   Serial.print(",");
-  Serial.print(r.b(d3));
+  Serial.print(b(d3));
   Serial.print(",");
-  Serial.print(r.b(d4));
+  Serial.print(b(d4));
   Serial.print(",");
-  Serial.print(r.l());
+  Serial.print(l());
   Serial.print(")");
 }
 
@@ -446,17 +446,17 @@ void RMSPRO::srmo(void)
 void RMSPRO::sensorMonitor(void)
 {
   Serial.print("(");
-  Serial.print(r.btn());
+  Serial.print(btn());
   Serial.print(",");
-  Serial.print(r.ball(d1));
+  Serial.print(ball(d1));
   Serial.print(",");
-  Serial.print(r.ball(d2));
+  Serial.print(ball(d2));
   Serial.print(",");
-  Serial.print(r.ball(d3));
+  Serial.print(ball(d3));
   Serial.print(",");
-  Serial.print(r.ball(d4));
+  Serial.print(ball(d4));
   Serial.print(",");
-  Serial.print(r.line());
+  Serial.print(line());
   Serial.print(")");
 }
 //(ボタン,ボール前(d1),ボール右(d2),ボール後ろ(d3),ボール左(d4),ライン)
