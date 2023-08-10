@@ -11,12 +11,14 @@ void setup()
 }
 void loop()
 {
-  if(r.bt()==high){
-    r.m(255,255);
-  }
-  else{
-    r.m(-255,-255);
-  }
+    //繰り返し実行するものはここに書きます
+  Serial.print(r.b(fr));
+  Serial.print(":");
+  Serial.print(r.b(ri));
+  Serial.print(":");
+  Serial.print(r.b(ba));
+  Serial.print(":");
+  Serial.println(r.b(le));
 }
 
 
