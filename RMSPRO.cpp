@@ -424,7 +424,7 @@ int RMSPRO::line(void)
 ////////////////////////センサモニタ////////////////////////
 
 //beginner mode
-void RMSPRO::srmo(void)
+int RMSPRO::srmo(void)
 {
   Serial.print("(");
   Serial.print(bt());
@@ -443,7 +443,7 @@ void RMSPRO::srmo(void)
 
 
 //advanced mode
-void RMSPRO::sensorMonitor(void)
+int RMSPRO::sensorMonitor(void)
 {
   Serial.print("(");
   Serial.print(btn());
