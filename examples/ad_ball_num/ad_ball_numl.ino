@@ -11,6 +11,13 @@ void setup()
 }
 void loop()
 {
+  Serial.print(r.b(d1));
+  Serial.print(":");
+  Serial.print(r.b(d2));
+  Serial.print(":");
+  Serial.print(r.b(d3));
+  Serial.print(":");
+  Serial.println(r.b(d4));
   //繰り返し実行するものはここに書きます 
 }
 

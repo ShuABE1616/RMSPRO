@@ -12,6 +12,7 @@ void setup()
 void loop()
 {
   //繰り返し実行するものはここに書きます 
+    Serial.println(r.line());
 }
 
 

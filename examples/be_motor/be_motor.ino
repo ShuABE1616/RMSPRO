@@ -11,8 +11,13 @@ void setup()
 }
 void loop()
 {
-  //繰り返し実行するものはここに書きます 
-    Serial.println(r.l());
+    if(r.bt() == HIGH){
+    r.m(255,255);
+  }
+  else{
+    r.m(-255,-255);
+  }
+    //繰り返し実行するものはここに書きます    
 }
 
 

@@ -11,8 +11,7 @@ void setup()
 }
 void loop()
 {
-  //繰り返し実行するものはここに書きます 
-    Serial.println(r.sensermonitor());
+  //繰り返し実行するものはここに書きます
 }
 
 
@@ -26,7 +25,7 @@ void loop()
 r.motor(left,right); //モーターを動かす。leftとrightには-255~255の値を入れる。正の値で前進、負の値で後退。
 r.sensorMonitor(); //センサーの値をシリアルモニターに表示する。
 r.ball(); //前のボールセンサーの値を返す。0~500の値を返す。
-()の中に入るもの
+ball()の()の中に入るもの
 方向(front)(right)(back)(left)(fr)(ri)(ba)(le)
 番号(d1)(d2)(d3)(d4)
 r.line(); //ラインセンサーの値を返す。0~1023の値を返す。

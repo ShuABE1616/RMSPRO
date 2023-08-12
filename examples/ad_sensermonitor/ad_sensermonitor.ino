@@ -11,7 +11,20 @@ void setup()
 }
 void loop()
 {
-  //繰り返し実行するものはここに書きます
+  //繰り返し実行するものはここに書きます 
+  Serial.print("(");
+  Serial.print(r.btn());
+  Serial.print(",");
+  Serial.print(r.ball(d1));
+  Serial.print(",");
+  Serial.print(r.ball(d2));
+  Serial.print(",");
+  Serial.print(r.ball(d3));
+  Serial.print(",");
+  Serial.print(r.ball(d4));
+  Serial.print(",");
+  Serial.print(r.line());
+  Serial.print(")");
 }
 
 
