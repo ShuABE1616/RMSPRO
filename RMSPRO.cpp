@@ -24,7 +24,10 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #include "RMSPRO.h"
 #include <avr/io.h>
+#include <Wire.h>
+#include "I2Cdev.h"
 #include <TimerOne.h>
+#include "MPU6050_6Axis_MotionApps20.h"
 
 #define MT1fr 3
 #define MT1ba 9
@@ -38,12 +41,45 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define IR4   8
 #define LINE1 14
 #define BTN   2
+#define MPU6050_ADDR    0x68
+#define OUTPUT_READABLE_YAWPITCHROLL
 
 volatile static int _ir1;
 volatile static int _ir2;
 volatile static int _ir3;
 volatile static int _ir4;
+volatile int Latest_azim;
+volatile double Deg_mpu;
+volatile double Degree;
+volatile double Median_x;
+volatile double Median_y;
+volatile double Scale;
+volatile int Raw_data[3];
+volatile bool Calib;
+volatile bool az_check_flag = false;
 volatile static bool Ready_to_start;
+
+MPU6050 mpu;
+
+// MPU control/status vars
+bool dmpReady = false;  // set true if DMP init was successful
+uint8_t mpuIntStatus;   // holds actual interrupt status byte from MPU
+uint8_t devStatus;      // return status after each device operation (0 = success, !0 = error)
+uint16_t packetSize;    // expected DMP packet size (default is 42 bytes)
+uint16_t fifoCount;     // count of all bytes currently in FIFO
+uint8_t fifoBuffer[64]; // FIFO storage buffer
+
+// orientation/motion vars
+Quaternion q;           // [w, x, y, z]         quaternion container
+VectorInt16 aa;         // [x, y, z]            accel sensor measurements
+VectorInt16 aaReal;     // [x, y, z]            gravity-free accel sensor measurements
+VectorInt16 aaWorld;    // [x, y, z]            world-frame accel sensor measurements
+VectorFloat gravity;    // [x, y, z]            gravity vector
+float euler[3];         // [psi, theta, phi]    Euler angle container
+float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gravity vector
+
+// packet structure for InvenSense teapot demo
+uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
 
 //タイマー割り込み
 void RMSPRO::timerISR(void)
@@ -55,6 +91,9 @@ void RMSPRO::timerISR(void)
   if((count % 2) == 0)
   {
     RMSPRO::irUpdate();
+  }
+  else if((count % 5) == 0){
+    RMSPRO::azimUpdate();
   }
   else
   {
@@ -70,8 +109,13 @@ void RMSPRO::timerISR(void)
 //コンストラクタ
 RMSPRO::RMSPRO(void)
 {
-  Ready_to_start = false;
-}
+  Ready_to_start = true;
+  Median_x = 0;
+  Median_y = 0;
+  Scale = 1;
+  Calib = true;
+  Latest_azim = 0;
+  }
 
 //初期化
 void RMSPRO::init(void)
@@ -92,6 +136,55 @@ void RMSPRO::init(void)
   Serial.begin(9600);
   Timer1.initialize();
   Timer1.attachInterrupt(timerISR);
+
+mpu.initialize(); // MPU6050の初期化
+mpu.testConnection(); // 接続を確認
+
+// ジャイロのオフセットキャリブレーション
+mpu.setXGyroOffset(220);
+mpu.setYGyroOffset(76);
+mpu.setZGyroOffset(-85);
+
+
+      
+      // join I2C bus (I2Cdev library doesn't do this automatically)
+      #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
+        Wire.begin();
+        Wire.setClock(400000); // 400kHz I2C clock. Comment this line if having compilation difficulties
+      #elif I2CDEV_IMPLEMENTATION == I2CDEV_BUILTIN_FASTWIRE
+        Fastwire::setup(400, true);
+      #endif
+
+      // initialize device
+      mpu.initialize();
+
+      // verify connection
+      mpu.testConnection();
+
+      // load and configure the DMP
+      devStatus = mpu.dmpInitialize();
+
+      // supply your own gyro offsets here, scaled for min sensitivity
+      mpu.setXGyroOffset(220);
+      mpu.setYGyroOffset(76);
+      mpu.setZGyroOffset(-85);
+      mpu.setZAccelOffset(1788); // 1688 factory default for my test chip
+
+      // make sure it worked (returns 0 if so)
+      if (devStatus == 0) {
+        // Calibration Time: generate offsets and calibrate our MPU6050
+        mpu.CalibrateAccel(6);
+        mpu.CalibrateGyro(6);
+        mpu.PrintActiveOffsets();
+        mpu.setDMPEnabled(true);
+        mpuIntStatus = mpu.getIntStatus();
+
+        // set our DMP Ready flag so the main loop() function knows it's okay to use it
+        dmpReady = true;
+
+        // get expected DMP packet size for later comparison
+        packetSize = mpu.dmpGetFIFOPacketSize();
+      }
 }
 
 
@@ -421,7 +514,10 @@ int RMSPRO::line(void)
 }
 ////////////////////////ラインセンサーの値を返すend////////////////////////
 
+
+
 ////////////////////////センサモニタ////////////////////////
+
 
 //beginner mode
 void RMSPRO::srmo(void)
@@ -479,3 +575,49 @@ int RMSPRO::btn(void)
   return val;
 }
 ////////////////////////advanced mode end////////////////////////
+
+////////////////////////MPU////////////////////
+void RMSPRO::azimUpdate(void)
+{
+ 
+    int16_t axRaw, ayRaw, azRaw, gxRaw, gyRaw, gzRaw, Temperature;
+
+    //I2C割り込みの許可
+    interrupts();
+
+    if (mpu.dmpGetCurrentFIFOPacket(fifoBuffer)) { 
+      mpu.dmpGetQuaternion(&q, fifoBuffer);
+      mpu.dmpGetGravity(&gravity, &q);
+      mpu.dmpGetYawPitchRoll(ypr, &q, &gravity);
+      Degree = ypr[0] * 180/M_PI;
+    }
+
+    //I2C割り込み禁止
+    noInterrupts();  
+    az_check_flag = false;
+  }
+ 
+
+  
+
+
+////////////////////////////////////////
+/*方位角を返す(-180~180)　　　　　　　　　  */
+/*メモ：左手座標系なので時計回りを正回転とする*/
+////////////////////////////////////////
+int RMSPRO::getAzimuth(void)
+{
+  int ret = 0;
+  ret = Degree - Latest_azim;
+  while(ret > 179)
+  {
+    ret -= 360;
+  }
+  while(ret < -179)
+  {
+    ret += 360;
+  }
+  return ret;
+}
+
+

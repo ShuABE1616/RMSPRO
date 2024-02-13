@@ -75,10 +75,12 @@ class RMSPRO{
         int ball(DIR2 dir);
         int line(void);
         int btn(void);
+        int getAzimuth(void);
 
     private:
-            static void irUpdate(void);
-            static void timerISR(void);
+        static void irUpdate(void);
+        static void timerISR(void);
+        static void azimUpdate(void);
 };
 
 #endif
