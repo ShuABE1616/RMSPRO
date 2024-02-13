@@ -41,13 +41,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define IR4   8
 #define LINE1 14
 #define BTN   2
-#define MPU6050_ADDR    0x68
 #define OUTPUT_READABLE_YAWPITCHROLL
 
-volatile static int _ir1;
-volatile static int _ir2;
-volatile static int _ir3;
-volatile static int _ir4;
+volatile static bool Ready_to_start;
 volatile int Latest_azim;
 volatile double Deg_mpu;
 volatile double Degree;
@@ -55,10 +51,16 @@ volatile double Median_x;
 volatile double Median_y;
 volatile double Scale;
 volatile int Raw_data[3];
+volatile static int _ir1;
+volatile static int _ir2;
+volatile static int _ir3;
+volatile static int _ir4;
 volatile bool Calib;
 volatile bool az_check_flag = false;
-volatile static bool Ready_to_start;
 
+///////////////
+/*コンストラクタ*/
+////////////////
 MPU6050 mpu;
 
 // MPU control/status vars
@@ -81,22 +83,26 @@ float ypr[3];           // [yaw, pitch, roll]   yaw/pitch/roll container and gra
 // packet structure for InvenSense teapot demo
 uint8_t teapotPacket[14] = { '$', 0x02, 0,0, 0,0, 0,0, 0,0, 0x00, 0x00, '\r', '\n' };
 
-//タイマー割り込み
-void RMSPRO::timerISR(void)
-{
-   static long count = 0;
+
+/////////////////////////////////////////////////
+/*タイマー割り込み関数 2040マイクロ秒周期で呼び出される*/
+/////////////////////////////////////////////////
+void RMSPRO::timerISR(void){
+
+  static long count = 0;
 
   //タイマ割り込みの停止
   Timer1.detachInterrupt();
-  if((count % 2) == 0)
-  {
-    RMSPRO::irUpdate();
-  }
-  else if((count % 5) == 0){
+
+  /*一定周期ごとに関数を実行*/
+  /*タイミングが重なった場合上から優先で実行される*/
+  if((count % 5) == 0){//約100Hz
     RMSPRO::azimUpdate();
   }
-  else
-  {
+  else if((count % 23) == 0){//約20Hz
+    RMSPRO::irUpdate();
+  }
+  else{
     /*DO NOTHING*/
   }
 
@@ -109,13 +115,13 @@ void RMSPRO::timerISR(void)
 //コンストラクタ
 RMSPRO::RMSPRO(void)
 {
-  Ready_to_start = true;
+  Ready_to_start = false;
   Median_x = 0;
   Median_y = 0;
   Scale = 1;
-  Calib = true;
+  Calib = false;
   Latest_azim = 0;
-  }
+}
 
 //初期化
 void RMSPRO::init(void)
@@ -134,18 +140,7 @@ void RMSPRO::init(void)
   pinMode(LINE1, INPUT);
   pinMode(BTN, INPUT);
   Serial.begin(9600);
-  Timer1.initialize();
-  Timer1.attachInterrupt(timerISR);
-
-mpu.initialize(); // MPU6050の初期化
-mpu.testConnection(); // 接続を確認
-
-// ジャイロのオフセットキャリブレーション
-mpu.setXGyroOffset(220);
-mpu.setYGyroOffset(76);
-mpu.setZGyroOffset(-85);
-
-
+ 
       
       // join I2C bus (I2Cdev library doesn't do this automatically)
       #if I2CDEV_IMPLEMENTATION == I2CDEV_ARDUINO_WIRE
@@ -184,7 +179,15 @@ mpu.setZGyroOffset(-85);
 
         // get expected DMP packet size for later comparison
         packetSize = mpu.dmpGetFIFOPacketSize();
+      
       }
+    
+    
+
+  /*タイマ割り込み開始*/
+  Timer1.initialize(); //2040マイクロ秒周期でタイマ割込みが入る
+  Timer1.attachInterrupt(timerISR); 
+
 }
 
 
@@ -564,22 +567,26 @@ int RMSPRO::bt(void)
 {
   int val = 0;
   val = digitalRead(BTN);
-  return val;
-}
+  return Ready_to_start;}
 
 //advanced mode
 int RMSPRO::btn(void)
 {
   int val = 0;
   val = digitalRead(BTN);
-  return val;
-}
+  return Ready_to_start;}
+
+
 ////////////////////////advanced mode end////////////////////////
 
 ////////////////////////MPU////////////////////
+
+////////////////////////////////////////
+/*方位角の計算　　　　　　　　　　　　　　　　*/
+/*メモ：左手座標系なので時計回りを正回転とする*/
+////////////////////////////////////////
 void RMSPRO::azimUpdate(void)
 {
- 
     int16_t axRaw, ayRaw, azRaw, gxRaw, gyRaw, gzRaw, Temperature;
 
     //I2C割り込みの許可
@@ -595,11 +602,8 @@ void RMSPRO::azimUpdate(void)
     //I2C割り込み禁止
     noInterrupts();  
     az_check_flag = false;
-  }
- 
-
   
-
+}
 
 ////////////////////////////////////////
 /*方位角を返す(-180~180)　　　　　　　　　  */
@@ -619,5 +623,3 @@ int RMSPRO::getAzimuth(void)
   }
   return ret;
 }
-
-

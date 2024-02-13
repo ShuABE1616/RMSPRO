@@ -79,7 +79,7 @@ class RMSPRO{
 
     private:
         static void irUpdate(void);
-        static void timerISR(void);
+    static void timerISR(void);
         static void azimUpdate(void);
 };
 
