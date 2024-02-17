@@ -567,24 +567,23 @@ int RMSPRO::bt(void)
 {
   int val = 0;
   val = digitalRead(BTN);
-  return Ready_to_start;}
+  return Ready_to_start;
+}
+
 
 //advanced mode
 int RMSPRO::btn(void)
 {
   int val = 0;
   val = digitalRead(BTN);
-  return Ready_to_start;}
+  return Ready_to_start;
+}
 
 
-////////////////////////advanced mode end////////////////////////
+////////////////////////ボタンの値を返すend////////////////////////
 
-////////////////////////MPU////////////////////
-
-////////////////////////////////////////
-/*方位角の計算　　　　　　　　　　　　　　　　*/
-/*メモ：左手座標系なので時計回りを正回転とする*/
-////////////////////////////////////////
+////////////////////////ジャイロセンサーの値を返す////////////////////////
+//ジャイロの計算
 void RMSPRO::azimUpdate(void)
 {
     int16_t axRaw, ayRaw, azRaw, gxRaw, gyRaw, gzRaw, Temperature;
@@ -605,11 +604,7 @@ void RMSPRO::azimUpdate(void)
   
 }
 
-////////////////////////////////////////
-/*方位角を返す(-180~180)　　　　　　　　　  */
-/*メモ：左手座標系なので時計回りを正回転とする*/
-////////////////////////////////////////
-int RMSPRO::getAzimuth(void)
+int RMSPRO::dir(void)
 {
   int ret = 0;
   ret = Degree - Latest_azim;

@@ -75,7 +75,7 @@ class RMSPRO{
         int ball(DIR2 dir);
         int line(void);
         int btn(void);
-        int getAzimuth(void);
+        int dir(void);
 
     private:
         static void irUpdate(void);
