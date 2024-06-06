@@ -568,6 +568,7 @@ int RMSPRO::bt(void)
   int val = 0;
   val = digitalRead(BTN);
   return Ready_to_start;
+  return val;
 }
 
 
