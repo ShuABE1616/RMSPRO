@@ -567,8 +567,9 @@ int RMSPRO::bt(void)
 {
   int val = 0;
   val = digitalRead(BTN);
-  return Ready_to_start;
   return val;
+  return Ready_to_start;
+  
 }
 
 
@@ -577,6 +578,7 @@ int RMSPRO::btn(void)
 {
   int val = 0;
   val = digitalRead(BTN);
+  return val;
   return Ready_to_start;
 }
 
